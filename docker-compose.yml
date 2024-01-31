@@ -11,8 +11,9 @@ services:
         COPY hive.sql /docker-entrypoint-initdb.d/hive.sql
         ENTRYPOINT ["docker-entrypoint.sh"]
         CMD ["mysqld"]
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    env_file:
+      - .env
+
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 10s
@@ -30,6 +31,8 @@ services:
         RUN docker-php-ext-install mysqli
         RUN docker-php-ext-enable mysqli
         CMD ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
+    env_file:
+      - .env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost"]
       timeout: 10s
