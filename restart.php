@@ -2,12 +2,10 @@
 
 session_start();
 
-$_SESSION['board'] = [];
-$_SESSION['hand'] = [0 => ["Q" => 1, "B" => 2, "S" => 2, "A" => 3, "G" => 3], 1 => ["Q" => 1, "B" => 2, "S" => 2, "A" => 3, "G" => 3]];
-$_SESSION['player'] = 0;
+include_once 'game.php';
 
-$db = include_once 'database.php';
-$db->prepare('INSERT INTO games VALUES ()')->execute();
-$_SESSION['game_id'] = $db->insert_id;
+$db = include 'database.php';
 
-header('Location: index.php');
+$game = new Game($db);
+$game->restart();
+$game->saveStateToSession();
