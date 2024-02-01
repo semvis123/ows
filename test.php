@@ -1,5 +1,5 @@
 <?php
-// Instead of using something bloated like PHPUnit, let's just keep it simple
+// Instead of using something bloated like PHPUnit, let's just keep it simple.
 
 // don't run file if accessed from web
 if (php_sapi_name() != 'cli') {

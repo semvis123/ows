@@ -2,6 +2,8 @@
 
 session_start();
 
+include_once 'game.php';
+
 $db = include 'database.php';
 
 $game = new Game($db);
