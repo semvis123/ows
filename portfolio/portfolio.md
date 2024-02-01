@@ -43,6 +43,7 @@ Uit de SonarQube analyse komen de volgende problemen naar voren:
 - De code is formatted zodat deze makkelijker leesbaar is
 - Er is een wachtwoord toegevoegd aan de database doormiddel van een environment variabele
 - Unit tests worden toegevoegd in de volgende weken
+- De game logica is verplaatst naar een game class, zodat er niet op allerlei plekken state wordt veranderd
 
 <!-- Week 5
 Los bugs 1 tot en met 4 in de codebase op. Schrijf ook unit tests om te voorkomen dat deze
