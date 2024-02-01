@@ -72,5 +72,28 @@ describe("Queen move should be considered legal", function () {
     // assert
     var_dump($game->getError());
     assertEqual($game->hasError(), false);
+});
 
+describe("Queen should be forced to play at move 4 if not played before", function () {
+    // arrange
+    $db = include 'database.php';
+    $game = new Game($db);
+    $game->restart();
+    $game->playTile('B', '0,0'); // 1
+    $game->playTile('Q', '0,1');
+    $game->playTile('B', '0,-1'); // 2
+    $game->playTile('S', '0,2');
+    $game->playTile('S', '0,-2'); // 3
+    $game->playTile('B', '0,3');
+    assertEqual($game->hasError(), false);
+    
+    // act
+    $game->playTile('B', '0,-3'); // 4
+    $error_non_queen = $game->hasError();
+    $game->playTile('Q', '0,-3');
+    $error_queen = $game->hasError();
+
+    // assert
+    assertEqual($error_non_queen, true);
+    assertEqual($error_queen, false);
 });

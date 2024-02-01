@@ -111,9 +111,6 @@ class Game {
                 if (array_sum($hand) < 11 && !neighboursAreSameColor($this->getCurrentPlayer(), $new, $this->board)) {
                     continue;
                 }
-                if (array_sum($hand) <= 8 && $hand['Q']) {
-                    continue;
-                }
                 $to[] = $new;
             }
         }
@@ -189,7 +186,7 @@ class Game {
             $this->setError("board position has no neighbour");
         } elseif (array_sum($hand) < 11 && !neighboursAreSameColor($this->getCurrentPlayer(), $to, $this->board)) {
             $this->setError("Board position has opposing neighbour");
-        } elseif (array_sum($hand) <= 8 && $hand['Q']) {
+        } elseif (array_sum($hand) <= 8 && $hand['Q'] && $piece != 'Q') {
             $this->setError("Must play queen bee");
         }
         if ($this->hasError()) return;
