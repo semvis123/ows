@@ -2,24 +2,19 @@
     session_start();
 
     include_once 'util.php';
+    include_once 'game.php';
 
-    if (!isset($_SESSION['board'])) {
+    $db = include 'database.php';
+    
+    $game = new Game($db);
+    try {
+        $game->loadFromSession();
+    } catch (Exception $e) {
         header('Location: restart.php');
         exit(0);
     }
-    $board = $_SESSION['board'];
-    $player = $_SESSION['player'];
-    $hand = $_SESSION['hand'];
 
-    $to = [];
-    foreach ($GLOBALS['OFFSETS'] as $pq) {
-        foreach (array_keys($board) as $pos) {
-            $pq2 = explode(',', $pos);
-            $to[] = ($pq[0] + $pq2[0]).','.($pq[1] + $pq2[1]);
-        }
-    }
-    $to = array_unique($to);
-    if (!count($to)) $to[] = '0,0';
+    $to = $game->getPossibleMoves();
 ?>
 <!DOCTYPE html>
 <html>
@@ -76,58 +71,26 @@
     <body>
         <div class="board">
             <?php
-                $min_p = 1000;
-                $min_q = 1000;
-                foreach ($board as $pos => $tile) {
-                    $pq = explode(',', $pos);
-                    if ($pq[0] < $min_p) $min_p = $pq[0];
-                    if ($pq[1] < $min_q) $min_q = $pq[1];
-                }
-                foreach (array_filter($board) as $pos => $tile) {
-                    $pq = explode(',', $pos);
-                    $pq[0];
-                    $pq[1];
-                    $h = count($tile);
-                    echo '<div class="tile player';
-                    echo $tile[$h-1][0];
-                    if ($h > 1) echo ' stacked';
-                    echo '" style="left: ';
-                    echo ($pq[0] - $min_p) * 4 + ($pq[1] - $min_q) * 2;
-                    echo 'em; top: ';
-                    echo ($pq[1] - $min_q) * 4;
-                    echo "em;\">($pq[0],$pq[1])<span>";
-                    echo $tile[$h-1][1];
-                    echo '</span></div>';
-                }
+                echo $game->getBoardHtml();
             ?>
         </div>
-        <div class="hand">
-            White:
-            <?php
-                foreach ($hand[0] as $tile => $ct) {
-                    for ($i = 0; $i < $ct; $i++) {
-                        echo '<div class="tile player0"><span>'.$tile."</span></div> ";
-                    }
-                }
-            ?>
-        </div>
-        <div class="hand">
-            Black:
-            <?php
-            foreach ($hand[1] as $tile => $ct) {
-                for ($i = 0; $i < $ct; $i++) {
-                    echo '<div class="tile player1"><span>'.$tile."</span></div> ";
-                }
+
+        <?php
+            for ($player = 0; $player < 2; $player++) {
+                echo "<div class=\"hand\">";
+                echo $game->getPlayerName($player).": ";
+                echo $game->getHandHtml($player);
+                echo "</div>";
             }
-            ?>
-        </div>
+        ?>
+
         <div class="turn">
-            Turn: <?php if ($player == 0) echo "White"; else echo "Black"; ?>
+            Turn: <?php echo $game->getPlayerName($game->getCurrentPlayer()); ?>
         </div>
         <form method="post" action="play.php">
             <select name="piece">
                 <?php
-                    foreach ($hand[$player] as $tile => $ct) {
+                    foreach ($game->getHand($game->getCurrentPlayer()) as $tile => $ct) {
                         echo "<option value=\"$tile\">$tile</option>";
                     }
                 ?>
@@ -164,16 +127,15 @@
         <form method="post" action="restart.php">
             <input type="submit" value="Restart">
         </form>
-        <strong><?php if (isset($_SESSION['error'])) echo($_SESSION['error']); unset($_SESSION['error']); ?></strong>
+        <strong><?php 
+            if ($game->hasError()) {
+                echo $game->getError();
+                $game->clearError();
+            }
+        ?></strong>
         <ol>
             <?php
-                $db = include 'database.php';
-                $stmt = $db->prepare('SELECT * FROM moves WHERE game_id = '.$_SESSION['game_id']);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                while ($row = $result->fetch_array()) {
-                    echo '<li>'.$row[2].' '.$row[3].' '.$row[4].'</li>';
-                }
+                echo $game->getMoveHistoryHtml();
             ?>
         </ol>
         <form method="post" action="undo.php">

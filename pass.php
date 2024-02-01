@@ -2,11 +2,19 @@
 
 session_start();
 
+include_once 'game.php';
+
 $db = include 'database.php';
-$stmt = $db->prepare('insert into moves (game_id, type, move_from, move_to, previous_id, state) values (?, "pass", null, null, ?, ?)');
-$stmt->bind_param('iis', $_SESSION['game_id'], $_SESSION['last_move'], get_state());
-$stmt->execute();
-$_SESSION['last_move'] = $db->insert_id;
-$_SESSION['player'] = 1 - $_SESSION['player'];
+
+$game = new Game($db);
+try {
+    $game->loadFromSession();
+} catch (Exception $e) {
+    $_SESSION['error'] = $e->getMessage();
+    header('Location: index.php');
+    exit;
+}
+$game->pass();
+$game->saveStateToSession();
 
 header('Location: index.php');
