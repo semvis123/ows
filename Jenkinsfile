@@ -12,5 +12,10 @@ pipeline {
             }
         }
       }
+      stage('Test') {
+        steps {
+          sh 'php test.php'
+        }
+      }
     }
 }
