@@ -112,7 +112,7 @@
             </select>
             <select name="to">
                 <?php
-                    foreach ($game->getPossiblePlaces() as $pos) {
+                    foreach ($game->getPossibleMoves() as $pos) {
                         echo "<option value=\"$pos\">$pos</option>";
                     }
                 ?>

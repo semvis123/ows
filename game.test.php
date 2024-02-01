@@ -52,3 +52,25 @@ describe("Move tile dropdown should only show the current players tiles", functi
     assertEqual(count($moves), 1);
     assertEqual($moves[0], '0,0');
 });
+
+describe("Queen move should be considered legal", function () {
+    // If white plays a queen bee at (0, 0), and black plays at (1, 0), then it should be a legal move for white to move his queen to (0, 1), but it is not allowed.
+    
+    // arrange
+    $db = include 'database.php';
+    $game = new Game($db);
+    $game->restart();
+    $game->playTile('Q', '0,0');
+    $game->playTile('Q', '1,0');
+    $moves = $game->getMovableTiles();
+    assertEqual(count($moves),1);
+    assertEqual($moves[0], '0,0');
+
+    // act
+    $game->moveTile('0,0', '0,1');
+
+    // assert
+    var_dump($game->getError());
+    assertEqual($game->hasError(), false);
+
+});
