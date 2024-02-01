@@ -1,6 +1,6 @@
 <?php
 
-include 'test.php';
+include_once 'test.php';
 
 describe('Assertions should work', function() {
     assertEqual('1', '1');
