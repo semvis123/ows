@@ -37,7 +37,7 @@ describe("New tile position dropdown should filter out non available positions",
     assertEqual(array_search('0,-1', $moves_after), false);
 });
 
-describe("Move tile dropdown should only show the current players tile", function () {
+describe("Move tile dropdown should only show the current players tiles", function () {
     // arrange
     $db = include 'database.php';
     $game = new Game($db);
