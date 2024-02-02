@@ -6,16 +6,14 @@ function isNeighbour($a, $b)
 {
     $a = explode(',', $a);
     $b = explode(',', $b);
-    if ($a[0] == $b[0] && abs($a[1] - $b[1]) == 1) {
-        return true;
-    }
 
-    if ($a[1] == $b[1] && abs($a[0] - $b[0]) == 1) {
-        return true;
-    }
+    foreach ($GLOBALS['OFFSETS'] as $pq) {
+        $p = $a[0] + $pq[0];
+        $q = $a[1] + $pq[1];
+        if ($p == $b[0] && $q == $b[1]) {
+            return true;
+        }
 
-    if ($a[0] + $a[1] == $b[0] + $b[1]) {
-        return true;
     }
 
     return false;
@@ -29,6 +27,24 @@ function hasNeighBour($a, $board)
         }
 
     }
+}
+
+function pathContainsEmptyTiles($from, $to, $board)
+{
+    $from = explode(',', $from);
+    $to = explode(',', $to);
+
+    $dir = [$from[0] > $to[0] ? -1 : ($from[0] < $to[0] ? 1 : 0),
+            $from[1] > $to[1] ? -1 : ($from[1] < $to[1] ? 1 : 0)];
+
+    while ($from[0] != $to[0] || $from[1] != $to[1]) {
+        if (!isset($board[$from[0] . "," . $from[1]])) {
+            return true;
+        }
+        $from[0] += $dir[0];
+        $from[1] += $dir[1];
+    }
+    return false;
 }
 
 function neighboursAreSameColor($player, $a, $board)

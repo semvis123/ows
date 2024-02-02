@@ -250,6 +250,12 @@ class Game {
                     if (!slide($this->board, $piece, $to)) {
                         $this->setError('Tile must slide');
                     }
+                } elseif ($tile[1] == "G") {
+                    if (isNeighbour($piece, $to)) {
+                        $this->setError('Jump must greater than 1');
+                    } elseif (pathContainsEmptyTiles($piece, $to, $this->board)) {
+                        $this->setError('Path contains empty tiles');
+                    }
                 }
             }
         }
