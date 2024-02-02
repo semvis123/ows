@@ -4,11 +4,12 @@ session_start();
 
 include_once 'util.php';
 include_once 'game.php';
+include_once 'database.php';
 
 $piece = $_POST['from'];
 $to = $_POST['to'];
 
-$db = include 'database.php';
+$db = getDatabase();
 $game = new Game($db);
 try {
     $game->loadFromSession();

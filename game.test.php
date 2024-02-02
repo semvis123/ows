@@ -2,10 +2,11 @@
 
 include_once 'test.php';
 include_once 'game.php';
+include_once 'database.php';
 
 describe("Tile dropdown should filter out non available tiles", function () {
     // arrange
-    $db = include 'database.php';
+    $db = getDatabase();
     $game = new Game($db);
     $game->restart();
     $player1_hand_before = $game->getHand(0);
@@ -21,7 +22,7 @@ describe("Tile dropdown should filter out non available tiles", function () {
 
 describe("New tile position dropdown should filter out non available positions", function () {
     // arrange
-    $db = include 'database.php';
+    $db = getDatabase();
     $game = new Game($db);
     $game->restart();
     $game->playTile('Q', '0,0');
@@ -39,7 +40,7 @@ describe("New tile position dropdown should filter out non available positions",
 
 describe("Move tile dropdown should only show the current players tiles", function () {
     // arrange
-    $db = include 'database.php';
+    $db = getDatabase();
     $game = new Game($db);
     $game->restart();
 
@@ -57,7 +58,7 @@ describe("Queen move should be considered legal", function () {
     // If white plays a queen bee at (0, 0), and black plays at (1, 0), then it should be a legal move for white to move his queen to (0, 1), but it is not allowed.
     
     // arrange
-    $db = include 'database.php';
+    $db = getDatabase();
     $game = new Game($db);
     $game->restart();
     $game->playTile('Q', '0,0');
@@ -76,7 +77,7 @@ describe("Queen move should be considered legal", function () {
 
 describe("Queen should be forced to play at move 4 if not played before", function () {
     // arrange
-    $db = include 'database.php';
+    $db = getDatabase();
     $game = new Game($db);
     $game->restart();
     $game->playTile('B', '0,0'); // 1
@@ -100,7 +101,7 @@ describe("Queen should be forced to play at move 4 if not played before", functi
 
 describe("Tile should be allowed to move on top of other tiles", function () {
     // arrange
-    $db = include 'database.php';
+    $db = getDatabase();
     $game = new Game($db);
     $game->restart();
     $game->playTile('Q', '0,0');
@@ -121,7 +122,7 @@ describe("Tile should be allowed to move on top of other tiles", function () {
 
 describe("Tile should be allowed to be placed in spots that were previously occupied", function () {
     // arrange
-    $db = include 'database.php';
+    $db = getDatabase();
     $game = new Game($db);
     $game->restart();
     $game->playTile('Q', '0,0');
