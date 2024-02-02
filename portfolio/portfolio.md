@@ -61,7 +61,11 @@ Implementeer features 1 tot en met 5. Gebruik hiervoor test-driven development.
 Bewijsmiddelen: De unit tests en aangepaste code dienen onderdeel te zijn van de
 ingeleverde repository.
 -->
+Klaar, zie repo.
 
+# Week 7
+
+Zie repo.
 
 <!--
 Week 7
