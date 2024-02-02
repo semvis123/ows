@@ -143,3 +143,36 @@ describe("Tile should be allowed to be placed in spots that were previously occu
     assertEqual($placementError2, false);
 });
 
+describe("A player is only allowed to pass if there is no other move or placement possible", function () {
+    // arrange
+    $db = getDatabase();
+    $game = new Game($db);
+    $game->restart();
+    $game->playTile('Q', '0,0');
+    $game->playTile('Q', '0,1');
+    $game->playTile('B', '0,-1');
+    $game->playTile('B', '0,2');
+    $game->moveTile('0,-1', '0,0');
+    $game->moveTile('0,2', '0,1');
+    
+    // act
+    $game->pass();
+
+    // assert
+    assertNotEqual($game->getError(), null);
+}); 
+
+describe("A player should be able to pass", function () {
+    // arrange
+    $db = getDatabase();
+    $game = new Game($db);
+    $game->restart();
+    $game->hand[0] = [];
+    $game->hand[1] = [];
+
+    // act
+    $game->pass();
+
+    // assert
+    assertEqual($game->getError(), null);
+});
