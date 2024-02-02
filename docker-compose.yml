@@ -2,42 +2,14 @@ version: '3.8'
 
 services:
   database:
-    container_name: database
+    extends:
+      file: docker-compose.base.yml
+      service: database
     ports:
       - 3306:3306
-    build:
-      dockerfile_inline: |
-        FROM mysql:5.7
-        COPY hive.sql /docker-entrypoint-initdb.d/hive.sql
-        ENTRYPOINT ["docker-entrypoint.sh"]
-        CMD ["mysqld"]
-    env_file:
-      - .env
-
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 10s
-      interval: 5s
-      retries: 10
-
   php:
+    extends:
+      file: docker-compose.base.yml
+      service: php
     ports: 
       - 80:80
-    volumes:
-      - ./:/var/www/html
-    build:
-      dockerfile_inline: |
-        FROM php:5.6
-        RUN docker-php-ext-install mysqli
-        RUN docker-php-ext-enable mysqli
-        CMD ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
-    env_file:
-      - .env
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
-      timeout: 10s
-      interval: 5s
-      retries: 10
-    depends_on:
-      database:
-          condition: service_healthy
