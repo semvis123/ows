@@ -8,9 +8,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - uses: adambirds/docker-compose-action@v1.3.0
-        with:
-          compose-file: "docker-compose.yml"
-          down-flags: "--volumes"
-          test-container: php
-          test-command: "cd /var/www/html && php test.php"
+      - name: Run tests
+        run: |
+          docker-compose -f docker-compose.yml up -d
+          docker-compose -f docker-compose.yml exec php php test.php
+          docker-compose -f docker-compose.yml down --volumes
