@@ -331,10 +331,14 @@ class Game {
     }
 
     public function undo() {
-        $stmt = $this->database->prepare('SELECT * FROM moves WHERE id = ?');
-        $stmt->bind_param('i', $this->last_move);
+        $stmt = $this->database->prepare('SELECT * FROM moves WHERE id = ? AND game_id = ?');
+        $stmt->bind_param('ii', $this->last_move, $this->game_id);
         $stmt->execute();
         $result = $stmt->get_result()->fetch_array();
+        if (!$result) {
+            $this->setError('No moves to undo');
+            return;
+        }
         $this->last_move = $result[5];
         $this->loadState($result[6]);
     }
