@@ -97,3 +97,47 @@ describe("Queen should be forced to play at move 4 if not played before", functi
     assertEqual($error_non_queen, true);
     assertEqual($error_queen, false);
 });
+
+describe("Tile should be allowed to move on top of other tiles", function () {
+    // arrange
+    $db = include 'database.php';
+    $game = new Game($db);
+    $game->restart();
+    $game->playTile('Q', '0,0');
+    $game->playTile('Q', '0,1');
+    $game->playTile('B', '0,-1');
+    $game->playTile('B', '0,2');
+    
+    // act
+    $game->moveTile('0,-1', '0,0');
+    $movementError1 = $game->hasError();
+    $game->moveTile('0,2', '0,1');
+    $movementError2 = $game->hasError();
+
+    // assert
+    assertEqual($movementError1, false);
+    assertEqual($movementError2, false);
+});
+
+describe("Tile should be allowed to be placed in spots that were previously occupied", function () {
+    // arrange
+    $db = include 'database.php';
+    $game = new Game($db);
+    $game->restart();
+    $game->playTile('Q', '0,0');
+    $game->playTile('Q', '0,1');
+    $game->playTile('B', '0,-1');
+    $game->playTile('B', '0,2');
+    $game->moveTile('0,-1', '0,0');
+    $game->moveTile('0,2', '0,1');
+    
+    // act
+    $game->playTile('B', '0,-1');
+    $placementError1 = $game->hasError();
+    $game->playTile('B', '0,2');
+    $placementError2 = $game->hasError();
+
+    // assert
+    assertEqual($placementError1, false);
+    assertEqual($placementError2, false);
+});

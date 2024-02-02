@@ -82,6 +82,10 @@ class Game {
     }
 
     public function getMovableTiles() {
+        if ($this->hand[$this->getCurrentPlayer()]['Q']) {
+            return [];
+        }
+
         $to = [];
         foreach (array_keys($this->board) as $pos) {
             // continue if the tile is on top is not from the current player
@@ -261,6 +265,11 @@ class Game {
             } else {
                 $this->board[$to] = [$tile];
             }
+
+            if (count($this->board[$piece]) == 0) {
+                unset($this->board[$piece]);
+            }
+
             $this->setOtherPlayer();
             $stmt = $this->database->prepare('insert into moves (game_id, type, move_from, move_to, previous_id, state) values (?, "move", ?, ?, ?, ?)');
             $stmt->bind_param('issis', $this->game_id, $piece, $to, $this->last_move, $this->serializeState());
