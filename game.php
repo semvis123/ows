@@ -348,4 +348,48 @@ class Game {
         $stmt->execute();
         $this->game_id = $this->database->insert_id;
     }
+
+    public function isGameOver($returnWinner = false) {
+        $queenSurrounded = [false, false];
+
+        for ($i = 0; $i < 2; $i++) {
+            $queen = null;
+            foreach ($this->board as $pos => $tile) {
+                foreach ($tile as $t) {
+                    if ($t[0] == $i && $t[1] == 'Q') {
+                        $queen = $pos;
+                        break 2;
+                    }
+                }
+            }
+
+            if ($queen === null) {
+                continue;
+            }
+
+            // check if the queen is surrounded
+            $surrounded = true;
+            foreach ($GLOBALS['OFFSETS'] as $pq) {
+                list($x, $y) = explode(',', $queen);
+                $new = ($pq[0] + $x).','.($pq[1] + $y);
+                if (!isset($this->board[$new])) {
+                    $surrounded = false;
+                }
+            }
+            if ($surrounded) {
+                $queenSurrounded[$i] = true;
+            }
+        }
+        if ($returnWinner) {
+            if ($queenSurrounded[0] && $queenSurrounded[1]) {
+                return 2;
+            } elseif ($queenSurrounded[0]) {
+                return 1;
+            } elseif ($queenSurrounded[1]) {
+                return 0;
+            }
+            return false;
+        }
+        return $queenSurrounded[0] || $queenSurrounded[1];
+    }
 }
