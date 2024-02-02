@@ -176,3 +176,48 @@ describe("A player should be able to pass", function () {
     // assert
     assertEqual($game->getError(), null);
 });
+
+describe("Gameover should be true when the queen is surrounded", function () {
+    // arrange
+    $db = getDatabase();
+    $game = new Game($db);
+    $game->restart();
+    $game->playTile('Q', '0,0');
+    $game->playTile('Q', '0,1');
+    $game->playTile('B', '-1,0');
+    $game->playTile('B', '-1,2');
+    $game->playTile('A', '0,-1');
+    $game->playTile('B', '-2,2');
+    $game->playTile('A', '1,-1');
+    $game->forcePass();
+    $game->moveTile('1,-1', '1,0');
+    $game->forcePass();
+    $game->playTile('A', '1,-1');
+    
+    // act
+    $game->moveTile('-2,2', '1,-1');
+
+
+    // assert
+    assertEqual($game->isGameOver(), true);
+});
+
+describe("Gameover should be false when the queen is not surrounded", function () {
+    // arrange
+    $db = getDatabase();
+    $game = new Game($db);
+    $game->restart();
+    $game->playTile('A', '0,0');
+    $game->playTile('Q', '0,1');
+    $game->playTile('B', '-1,0');
+    $game->playTile('B', '-1,2');
+    $game->playTile('A', '-1,-1');
+    $game->playTile('B', '-2,2');
+    
+    // act
+    $game->playTile('Q', '-1,1');
+    $game->playTile('B', '-2,1');
+
+    // assert
+    assertEqual($game->isGameOver(), true);
+});
