@@ -14,7 +14,7 @@ pipeline {
       }
       stage('Test') {
         steps {
-          sh 'docker compose -f docker-compose.base.yml -p jenkins-ows up -d'
+          sh 'docker compose -f docker-compose.base.yml -p jenkins-ows up -d --wait'
           sh 'docker compose -f docker-compose.base.yml -p jenkins-ows exec -w /var/www/html php php test.php'
           sh 'docker compose -f docker-compose.base.yml -p jenkins-ows down'
         }
