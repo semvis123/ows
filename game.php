@@ -260,6 +260,10 @@ class Game {
                     if (!hasSlidePath($this->board, $piece, $to)) {
                         $this->setError('Tile must slide');
                     }
+                } elseif ($tile[1] == "S") {
+                    if (!hasSlidePath($this->board, $piece, $to, true)) {
+                        $this->setError('Tile must slide exactly 3 tiles');
+                    }
                 }
             }
         }
