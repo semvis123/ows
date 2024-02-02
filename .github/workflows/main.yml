@@ -15,6 +15,6 @@ jobs:
           sudo cp ./docker/docker /usr/bin/ && rm -rf docker && docker version
       - name: Run tests
         run: |
-          docker compose -f docker-compose.yml up -d
-          docker compose -f docker-compose.yml exec php php test.php
-          docker compose -f docker-compose.yml down --volumes
+          docker compose up -d
+          docker compose exec -w /var/www/html php php test.php
+          docker compose down --volumes
