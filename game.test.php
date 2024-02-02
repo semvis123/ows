@@ -72,7 +72,7 @@ describe("Queen move should be considered legal", function () {
 
     // assert
     var_dump($game->getError());
-    assertEqual($game->hasError(), false);
+    assertEqual($game->getError(), null);
 });
 
 describe("Queen should be forced to play at move 4 if not played before", function () {
@@ -86,7 +86,7 @@ describe("Queen should be forced to play at move 4 if not played before", functi
     $game->playTile('S', '0,2');
     $game->playTile('S', '0,-2'); // 3
     $game->playTile('B', '0,3');
-    assertEqual($game->hasError(), false);
+    assertEqual($game->getError(), null);
     
     // act
     $game->playTile('B', '0,-3'); // 4
@@ -157,13 +157,13 @@ describe("Grasshopper implementation", function () {
             $game->playTile('B', '0,2');
             $game->playTile('G', '0,-2');
             $game->playTile('B', '0,3');
-            assertEqual($game->hasError(), false);
+            assertEqual($game->getError(), null);
             
             // act
             $game->moveTile('0,-2', '0,4');
     
             // assert
-            assertEqual($game->hasError(), false);
+            assertEqual($game->getError(), null);
         });
         describe("Horizontal jump", function () {
             // arrange
@@ -176,13 +176,13 @@ describe("Grasshopper implementation", function () {
             $game->playTile('B', '2,0');
             $game->playTile('G', '-2,0');
             $game->playTile('B', '3,0');
-            assertEqual($game->hasError(), false);
+            assertEqual($game->getError(), null);
 
             // act
             $game->moveTile('-2,0', '4,0');
 
             // assert
-            assertEqual($game->hasError(), false);
+            assertEqual($game->getError(), null);
         });
 
         describe("Diagonal jump", function () {
@@ -193,13 +193,14 @@ describe("Grasshopper implementation", function () {
             $game->playTile('Q', '0,0');
             $game->playTile('Q', '-1,1');
             $game->playTile('G', '1,-1');
+            assertEqual($game->getError(), null);
             $game->pass();
 
             // act
-            $game->moveTile('1,-1', '-1,1');
+            $game->moveTile('1,-1', '-2,2');
 
             // assert
-            assertEqual($game->hasError(), false);
+            assertEqual($game->getError(), null);
         });
     });
 
@@ -217,7 +218,7 @@ describe("Grasshopper implementation", function () {
         $game->moveTile('1,-1', '1,-1');
 
         // assert
-        assertNotEqual($game->hasError(), false);
+        assertNotEqual($game->getError(), null);
     });
 
     describe("A grasshopper must jump over at least one stone.", function () {
@@ -234,7 +235,7 @@ describe("Grasshopper implementation", function () {
         $game->moveTile('1,-1', '0,-1');
 
         // assert
-        assertNotEqual($game->hasError(), false);        
+        assertNotEqual($game->getError(), null);        
     });
 
     describe("A grasshopper may not jump to an occupied field.", function () {
@@ -251,7 +252,7 @@ describe("Grasshopper implementation", function () {
         $game->moveTile('0,-1', '0,1');
 
         // assert
-        assertNotEqual($game->hasError(), false);
+        assertNotEqual($game->getError(), null);
     });
 
     describe("A grasshopper may not jump over empty fields. This means that all fields between the start and end positions must be occupied.", function () {
@@ -268,6 +269,6 @@ describe("Grasshopper implementation", function () {
         $game->moveTile('0,-1', '-2,3');
         
         // assert
-        assertNotEqual($game->hasError(), false);
+        assertNotEqual($game->getError(), null);
     });
 });
