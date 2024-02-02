@@ -141,3 +141,26 @@ describe("Tile should be allowed to be placed in spots that were previously occu
     assertEqual($placementError1, false);
     assertEqual($placementError2, false);
 });
+
+
+describe("Grasshopper implementation", function () {
+    describe("A grasshopper moves by making a jump in a straight line to a field immediately behind another stone in the direction of the jump.", function () {
+        // TODO: add test
+    });
+
+    describe("A grasshopper may not move to the field where it is already standing.", function () {
+        // TODO: add test
+    });
+
+    describe("A grasshopper must jump over at least one stone.", function () {
+        // TODO: add test
+    });
+
+    describe("A grasshopper may not jump to an occupied field.", function () {
+        // TODO: add test
+    });
+
+    describe("A grasshopper may not jump over empty fields. This means that all fields between the start and end positions must be occupied.", function () {
+        // TODO: add test
+    });
+});
