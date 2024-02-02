@@ -45,15 +45,25 @@ Uit de SonarQube analyse komen de volgende problemen naar voren:
 - Unit tests worden toegevoegd in de volgende weken
 - De game logica is verplaatst naar een game class, zodat er niet op allerlei plekken state wordt veranderd
 
+# Week 5
 <!-- Week 5
 Los bugs 1 tot en met 4 in de codebase op. Schrijf ook unit tests om te voorkomen dat deze
 bugs later weer optreden.
 Bewijsmiddelen: De unit tests en aangepaste code dienen onderdeel te zijn van de
 ingeleverde repository.
+-->
+Zie game.test.php voor de unit tests.
+
+# Week 6
+<!--
 Week 6
 Implementeer features 1 tot en met 5. Gebruik hiervoor test-driven development.
 Bewijsmiddelen: De unit tests en aangepaste code dienen onderdeel te zijn van de
 ingeleverde repository.
+-->
+
+
+<!--
 Week 7
 Implementeer feature 6. Gebruik hiervoor test-driven development en test doubles. Schrijf
 ook een Dockerfile om de voor deze feature benodigde container te configureren. Los
