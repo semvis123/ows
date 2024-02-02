@@ -123,6 +123,9 @@
         <form method="post" action="pass.php">
             <input type="submit" value="Pass">
         </form>
+        <form method="post" action="play_ai.php">
+            <input type="submit" value="AI">
+        </form>
         <form method="post" action="restart.php">
             <input type="submit" value="Restart">
         </form>

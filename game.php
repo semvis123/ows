@@ -10,6 +10,7 @@ class Game {
     public $current_player = 0;
     private $database;
     private $last_move = 0;
+    private $move_nr = 0;
 
     public function __construct($database) {
         $this->database = $database;
@@ -25,14 +26,15 @@ class Game {
         $this->error = $_SESSION['error'];
         $this->game_id = $_SESSION['game_id'];
         $this->last_move = $_SESSION['last_move'];
+        $this->move_nr = $_SESSION['move_nr'];
     }
 
     public function serializeState() {
-        return serialize([$this->hand, $this->board, $this->current_player]);
+        return serialize([$this->hand, $this->board, $this->current_player, $this->move_nr]);
     }
 
     public function loadState($state) {
-        list($this->hand, $this->board, $this->current_player) = unserialize($state);
+        list($this->hand, $this->board, $this->current_player, $this->move_nr) = unserialize($state);
     }
 
     public function saveStateToSession() {
@@ -42,6 +44,7 @@ class Game {
         $_SESSION['error'] = $this->error;
         $_SESSION['game_id'] = $this->game_id;
         $_SESSION['last_move'] = $this->last_move;
+        $_SESSION['move_nr'] = $this->move_nr;
     }
 
     public function getBoardHtml() {
@@ -151,6 +154,10 @@ class Game {
         return array_filter($this->hand[$player], function ($ct) { return $ct > 0; });
     }
 
+    public function getHandForAI() {
+        return $this->hand;
+    }
+
     public function setHand($player, $hand) {
         $this->hand[$player] = $hand;
     }
@@ -206,6 +213,7 @@ class Game {
         $stmt->bind_param('issis', $this->game_id, $piece, $to, $this->last_move, $this->serializeState());
         $stmt->execute();
         $this->last_move = $this->database->insert_id;
+        $this->move_nr++;
     }
 
     public function setOtherPlayer() {
@@ -298,6 +306,7 @@ class Game {
         $stmt = $this->database->prepare('insert into moves (game_id, type, move_from, move_to, previous_id, state) values (?, "move", ?, ?, ?, ?)');
         $stmt->bind_param('issis', $this->game_id, $piece, $to, $this->last_move, $this->serializeState());
         $stmt->execute();
+        $this->move_nr++;
         $this->last_move = $this->database->insert_id;
     
     }
@@ -323,6 +332,7 @@ class Game {
         $stmt->bind_param('iis', $this->game_id, $this->last_move, $this->serializeState());
         $stmt->execute();
         $this->last_move = $this->database->insert_id;
+        $this->move_nr++;
         $this->setOtherPlayer();
     }
 
@@ -395,5 +405,13 @@ class Game {
             return false;
         }
         return $queenSurrounded[0] || $queenSurrounded[1];
+    }
+
+    public function getMoveNumber() {
+        return $this->move_nr;
+    }
+
+    public function getBoard() {
+        return $this->board;
     }
 }
