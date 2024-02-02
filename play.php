@@ -4,8 +4,9 @@ session_start();
 
 include_once 'util.php';
 include_once 'game.php';
+include_once 'database.php';
 
-$db = include 'database.php';
+$db = getDatabase();
 
 $game = new Game($db);
 try {
