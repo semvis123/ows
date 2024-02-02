@@ -15,12 +15,12 @@ describe("Soldier ant implementation", function () {
         $game->playTile('B', '0,-1');
         $game->playTile('B', '0,2');
         $game->playTile('A', '0,-2');
-        $game->pass();
+        $game->forcePass();
         
         // act
         $game->moveTile('0,-2', '0,3');
         $error1 = $game->getError();
-        $game->pass();
+        $game->forcePass();
         $game->moveTile('0,3', '0,-2');
         $error2 = $game->getError();
 
@@ -38,7 +38,7 @@ describe("Soldier ant implementation", function () {
         $game->playTile('B', '0,-1');
         $game->playTile('B', '0,2');
         $game->playTile('A', '0,-2');
-        $game->pass();
+        $game->forcePass();
         
         // act
         $game->moveTile('0,-2', '0,2');
@@ -56,7 +56,7 @@ describe("Soldier ant implementation", function () {
         $game->playTile('B', '0,-1');
         $game->playTile('B', '0,2');
         $game->playTile('A', '0,-2');
-        $game->pass();
+        $game->forcePass();
         
         // act
         $game->moveTile('0,-2', '0,-2');

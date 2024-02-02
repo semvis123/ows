@@ -55,7 +55,7 @@ describe("Grasshopper implementation", function () {
             $game->playTile('Q', '-1,1');
             $game->playTile('G', '1,-1');
             assertEqual($game->getError(), null);
-            $game->pass();
+            $game->forcePass();
 
             // act
             $game->moveTile('1,-1', '-2,2');
@@ -73,7 +73,7 @@ describe("Grasshopper implementation", function () {
         $game->playTile('Q', '0,0');
         $game->playTile('Q', '-1,1');
         $game->playTile('G', '1,-1');
-        $game->pass();
+        $game->forcePass();
 
         // act
         $game->moveTile('1,-1', '1,-1');
@@ -90,7 +90,7 @@ describe("Grasshopper implementation", function () {
         $game->playTile('Q', '0,0');
         $game->playTile('Q', '-1,1');
         $game->playTile('G', '1,-1');
-        $game->pass();
+        $game->forcePass();
         
         // act
         $game->moveTile('1,-1', '0,-1');
@@ -107,7 +107,7 @@ describe("Grasshopper implementation", function () {
         $game->playTile('Q', '0,0');
         $game->playTile('Q', '0,1');
         $game->playTile('G', '0,-1');
-        $game->pass();
+        $game->forcePass();
         
         // act
         $game->moveTile('0,-1', '0,1');

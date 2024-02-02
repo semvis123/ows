@@ -52,7 +52,7 @@ describe("Spider implementation", function () {
         $game->playTile('B', '-1,0');
         $game->playTile('B', '-1,2');
         $game->playTile('S', '-1,-1');
-        $game->pass();
+        $game->forcePass();
         
         // act
         $game->moveTile('-1,-1', '-3,2');
