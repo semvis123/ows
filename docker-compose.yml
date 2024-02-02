@@ -13,3 +13,9 @@ services:
       service: php
     ports: 
       - 80:80
+  ai:
+    extends:
+      file: docker-compose.base.yml
+      service: ai
+    ports: 
+      - 5123:5000
