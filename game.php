@@ -151,6 +151,10 @@ class Game {
         return array_filter($this->hand[$player], function ($ct) { return $ct > 0; });
     }
 
+    public function setHand($player, $hand) {
+        $this->hand[$player] = $hand;
+    }
+
     public function getHandHtml($player) {
         $html = "";
         foreach ($this->hand[$player] as $tile => $ct) {
@@ -208,7 +212,7 @@ class Game {
         $this->current_player = 1 - $this->current_player; // 0 -> 1, 1 -> 0
     }
 
-    public function moveTile($piece, $to) {
+    public function moveTile($piece, $to, $dryRun=false) {
         $this->clearError();
         $hand = $this->getHand($this->getCurrentPlayer());
 
@@ -267,36 +271,62 @@ class Game {
                 }
             }
         }
-        if ($this->hasError()) {
+
+        $canPlay = !$this->hasError();
+
+        if (!$canPlay || $dryRun) {
+            // restore state
             if (isset($this->board[$piece])) {
                 array_push($this->board[$piece], $tile);
             } else {
                 $this->board[$piece] = [$tile];
             }
-        } else {
-            if (isset($this->board[$to])) {
-                array_push($this->board[$to], $tile);
-            } else {
-                $this->board[$to] = [$tile];
-            }
-
-            if (count($this->board[$piece]) == 0) {
-                unset($this->board[$piece]);
-            }
-
-            $this->setOtherPlayer();
-            $stmt = $this->database->prepare('insert into moves (game_id, type, move_from, move_to, previous_id, state) values (?, "move", ?, ?, ?, ?)');
-            $stmt->bind_param('issis', $this->game_id, $piece, $to, $this->last_move, $this->serializeState());
-            $stmt->execute();
-            $this->last_move = $this->database->insert_id;
+            return $canPlay;
         }
+        
+        if (isset($this->board[$to])) {
+            array_push($this->board[$to], $tile);
+        } else {
+            $this->board[$to] = [$tile];
+        }
+
+        if (count($this->board[$piece]) == 0) {
+            unset($this->board[$piece]);
+        }
+
+        $this->setOtherPlayer();
+        $stmt = $this->database->prepare('insert into moves (game_id, type, move_from, move_to, previous_id, state) values (?, "move", ?, ?, ?, ?)');
+        $stmt->bind_param('issis', $this->game_id, $piece, $to, $this->last_move, $this->serializeState());
+        $stmt->execute();
+        $this->last_move = $this->database->insert_id;
+    
     }
 
     public function pass() {
+        // check if placements are possible
+        if (count($this->getHand($this->getCurrentPlayer())) > 0) {
+            $this->setError('Player has moves available');
+            return;
+        }
+
+        // check if moves are possible
+        $movableTiles = $this->getMovableTiles();
+        foreach ($movableTiles as $tile) {
+            if ($this->moveTile($tile, $tile, true)) {
+                $this->setError('Player has moves available');
+                return;
+            }
+        }
+
+
         $stmt = $this->database->prepare('insert into moves (game_id, type, move_from, move_to, previous_id, state) values (?, "pass", null, null, ?, ?)');
         $stmt->bind_param('iis', $this->game_id, $this->last_move, $this->serializeState());
         $stmt->execute();
         $this->last_move = $this->database->insert_id;
+        $this->setOtherPlayer();
+    }
+
+    public function forcePass() {
         $this->setOtherPlayer();
     }
 

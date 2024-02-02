@@ -167,8 +167,8 @@ describe("A player should be able to pass", function () {
     $db = getDatabase();
     $game = new Game($db);
     $game->restart();
-    $game->hand[0] = [];
-    $game->hand[1] = [];
+    $game->setHand(0, []);
+    $game->setHand(1, []);
 
     // act
     $game->pass();
