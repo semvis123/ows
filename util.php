@@ -68,7 +68,7 @@ function len($tile)
     return $tile ? count($tile) : 0;
 }
 
-function canSlide($board, $from, $to, $isBeetle = false)
+function canSlide($board, $from, $to, $isBeetle = false, $isSpider = false)
 {
     if (!hasNeighBour($to, $board)) {
         return false;
@@ -91,21 +91,36 @@ function canSlide($board, $from, $to, $isBeetle = false)
             $common[] = $p . "," . $q;
         }
     }
+
+    if ($isSpider) {
+        return count($common) > 0;
+    }
     
     return count($common) == 1;
 }
 
-function hasSlidePath($board, $from, $to)
+function hasSlidePath($board, $from, $to, $isSpider = false)
 {
     $toVisit = [$from];
     $visited = [];
+    $paths = [];
+    $paths[$from] = [[$from]];
+
     while (count($toVisit) > 0) {
         $current = array_pop($toVisit);
+
         if ($current == $to) {
-            echo "found path from $from to $to\n";
             $visited[] = $current;
-            echo "visited: " . implode(",", $visited) . "\n";
-            return true;
+            
+            if ($isSpider) {
+                foreach ($paths[$current] as $path) {
+                    if (count($path) - 1 == 3) {
+                        return true;
+                    }
+                }
+            } else {
+                return true;
+            }
         }
         $visited[] = $current;
         $currentArr = explode(',', $current);
@@ -116,9 +131,17 @@ function hasSlidePath($board, $from, $to)
             if (isset($board[$neighbour])) {
                 continue;
             }
-            if (!in_array($neighbour, $visited) && canSlide($board, $current, $neighbour)) {
+            $temp = $board[$from];
+            unset($board[$from]);
+            if (!in_array($neighbour, $visited) && canSlide($board, $current, $neighbour, false, $isSpider)) {
                 $toVisit[] = $neighbour;
+                foreach ($paths[$current] as $path) {
+                    $newPath = $path;
+                    $newPath[] = $neighbour;
+                    $paths[$neighbour][] = $newPath;
+                }
             } 
+            $board[$from] = $temp;
         }
     }
     return false;
