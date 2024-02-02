@@ -1,5 +1,7 @@
 <?php
 
+include_once 'util.php';
+
 class Game {
     private $game_id = 0;
     public $board = array();
@@ -79,6 +81,48 @@ class Game {
         return $to;
     }
 
+    public function getMovableTiles() {
+        if ($this->hand[$this->getCurrentPlayer()]['Q']) {
+            return [];
+        }
+
+        $to = [];
+        foreach (array_keys($this->board) as $pos) {
+            // continue if the tile is on top is not from the current player
+            $tile = $this->board[$pos][count($this->board[$pos]) - 1];
+            if ($tile[0] != $this->getCurrentPlayer()) {
+                continue;
+            }
+            $to[] = $pos;
+        }
+        return $to;
+    }
+
+    public function getPossiblePlaces() {
+        $to = [];
+        $hand = $this->getHand($this->getCurrentPlayer());
+        foreach ($GLOBALS['OFFSETS'] as $pq) {
+            foreach (array_keys($this->board) as $pos) {
+                list($x, $y) = explode(',', $pos);
+                $new = ($pq[0] + $x).','.($pq[1] + $y);
+
+                if (isset($this->board[$new])) {
+                    continue;
+                }
+                if (count($this->board) && !hasNeighBour($new, $this->board)) {
+                    continue;
+                }
+                if (array_sum($hand) < 11 && !neighboursAreSameColor($this->getCurrentPlayer(), $new, $this->board)) {
+                    continue;
+                }
+                $to[] = $new;
+            }
+        }
+        $to = array_unique($to);
+        if (!count($to)) $to[] = '0,0';
+        return $to;
+    }
+
     private function parsePos($pos) {
         return explode(',', $pos);
     }
@@ -104,7 +148,7 @@ class Game {
     }
 
     public function getHand($player) {
-        return $this->hand[$player];
+        return array_filter($this->hand[$player], function ($ct) { return $ct > 0; });
     }
 
     public function getHandHtml($player) {
@@ -146,7 +190,7 @@ class Game {
             $this->setError("board position has no neighbour");
         } elseif (array_sum($hand) < 11 && !neighboursAreSameColor($this->getCurrentPlayer(), $to, $this->board)) {
             $this->setError("Board position has opposing neighbour");
-        } elseif (array_sum($hand) <= 8 && $hand['Q']) {
+        } elseif (array_sum($hand) <= 8 && $hand['Q'] && $piece != 'Q') {
             $this->setError("Must play queen bee");
         }
         if ($this->hasError()) return;
@@ -221,6 +265,11 @@ class Game {
             } else {
                 $this->board[$to] = [$tile];
             }
+
+            if (count($this->board[$piece]) == 0) {
+                unset($this->board[$piece]);
+            }
+
             $this->setOtherPlayer();
             $stmt = $this->database->prepare('insert into moves (game_id, type, move_from, move_to, previous_id, state) values (?, "move", ?, ?, ?, ?)');
             $stmt->bind_param('issis', $this->game_id, $piece, $to, $this->last_move, $this->serializeState());

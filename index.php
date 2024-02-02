@@ -13,8 +13,6 @@
         header('Location: restart.php');
         exit(0);
     }
-
-    $to = $game->getPossibleMoves();
 ?>
 <!DOCTYPE html>
 <html>
@@ -97,7 +95,7 @@
             </select>
             <select name="to">
                 <?php
-                    foreach ($to as $pos) {
+                    foreach ($game->getPossiblePlaces() as $pos) {
                         echo "<option value=\"$pos\">$pos</option>";
                     }
                 ?>
@@ -107,14 +105,14 @@
         <form method="post" action="move.php">
             <select name="from">
                 <?php
-                    foreach (array_keys($board) as $pos) {
+                    foreach ($game->getMovableTiles() as $pos) {
                         echo "<option value=\"$pos\">$pos</option>";
                     }
                 ?>
             </select>
             <select name="to">
                 <?php
-                    foreach ($to as $pos) {
+                    foreach ($game->getPossibleMoves() as $pos) {
                         echo "<option value=\"$pos\">$pos</option>";
                     }
                 ?>

@@ -3,6 +3,7 @@
 session_start();
 
 include_once 'util.php';
+include_once 'game.php';
 
 $piece = $_POST['from'];
 $to = $_POST['to'];

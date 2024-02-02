@@ -1,5 +1,5 @@
 <?php
-// Instead of using something bloated like PHPUnit, let's just keep it simple
+// Instead of using something bloated like PHPUnit, let's just keep it simple.
 
 // don't run file if accessed from web
 if (php_sapi_name() != 'cli') {
@@ -14,14 +14,18 @@ function describe($name, $fn) {
 }
 
 function assertEqual($a, $b) {
-    if ($a != $b) {
-        throw new Exception("Assertion failed: $a != $b");
+    if ($a !== $b) {
+        $a_export = var_export($a, true);
+        $b_export = var_export($b, true);
+        throw new Exception("Assertion failed: $a_export !== $b_export");
     }
 }
 
 function assertNotEqual($a, $b) {
-    if ($a == $b) {
-        throw new Exception("Assertion failed: $a == $b");
+    if ($a === $b) {
+        $a_export = var_export($a, true);
+        $b_export = var_export($b, true);
+        throw new Exception("Assertion failed: $a_export === $b_export");
     }
 }
 
@@ -50,6 +54,7 @@ foreach ($files as $file) {
     if ($return != 0) {
         echo "Failed $file\n";
         echo implode("\n", $output);
+        echo "\n";
         exit(1);
     }
     echo "Passed\n";
