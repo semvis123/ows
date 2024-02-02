@@ -68,10 +68,14 @@ function len($tile)
     return $tile ? count($tile) : 0;
 }
 
-function slide($board, $from, $to)
+function canSlide($board, $from, $to, $isBeetle = false)
 {
     if (!hasNeighBour($to, $board)) {
         return false;
+    }
+
+    if ($isBeetle) {
+        return true;
     }
 
     if (!isNeighbour($from, $to)) {
@@ -83,14 +87,39 @@ function slide($board, $from, $to)
     foreach ($GLOBALS['OFFSETS'] as $pq) {
         $p = $b[0] + $pq[0];
         $q = $b[1] + $pq[1];
-        if (isNeighbour($from, $p . "," . $q)) {
+        if (isNeighbour($from, $p . "," . $q) && isset($board[$p . "," . $q])) {
             $common[] = $p . "," . $q;
         }
     }
+    
+    return count($common) == 1;
+}
 
-    if (!isset($board[$common[0]]) && !isset($board[$common[1]]) && !isset($board[$from]) && !isset($board[$to])) {
-        return false;
+function hasSlidePath($board, $from, $to)
+{
+    $toVisit = [$from];
+    $visited = [];
+    while (count($toVisit) > 0) {
+        $current = array_pop($toVisit);
+        if ($current == $to) {
+            echo "found path from $from to $to\n";
+            $visited[] = $current;
+            echo "visited: " . implode(",", $visited) . "\n";
+            return true;
+        }
+        $visited[] = $current;
+        $currentArr = explode(',', $current);
+        foreach ($GLOBALS['OFFSETS'] as $pq) {
+            $p = $currentArr[0] + $pq[0];
+            $q = $currentArr[1] + $pq[1];
+            $neighbour = $p . "," . $q;
+            if (isset($board[$neighbour])) {
+                continue;
+            }
+            if (!in_array($neighbour, $visited) && canSlide($board, $current, $neighbour)) {
+                $toVisit[] = $neighbour;
+            } 
+        }
     }
-
-    return min(len($board[$common[0]]), len($board[$common[1]])) <= max(len($board[$from]), len($board[$to]));
+    return false;
 }

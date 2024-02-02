@@ -99,7 +99,7 @@ describe("Queen should be forced to play at move 4 if not played before", functi
     assertEqual($error_queen, false);
 });
 
-describe("Tile should be allowed to move on top of other tiles", function () {
+describe("Tile (beatle) should be allowed to move on top of other tiles", function () {
     // arrange
     $db = getDatabase();
     $game = new Game($db);

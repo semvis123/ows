@@ -247,7 +247,7 @@ class Game {
                 } elseif (isset($this->board[$to]) && $tile[1] != "B") {
                     $this->setError('Tile not empty');
                 } elseif ($tile[1] == "Q" || $tile[1] == "B") {
-                    if (!slide($this->board, $piece, $to)) {
+                    if (!canSlide($this->board, $piece, $to, $tile[1] == "B")) {
                         $this->setError('Tile must slide');
                     }
                 } elseif ($tile[1] == "G") {
@@ -255,6 +255,10 @@ class Game {
                         $this->setError('Jump must greater than 1');
                     } elseif (pathContainsEmptyTiles($piece, $to, $this->board)) {
                         $this->setError('Path contains empty tiles');
+                    }
+                } elseif ($tile[1] == "A") {
+                    if (!hasSlidePath($this->board, $piece, $to)) {
+                        $this->setError('Tile must slide');
                     }
                 }
             }
