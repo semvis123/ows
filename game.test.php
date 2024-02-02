@@ -195,7 +195,7 @@ describe("Gameover should be true when the queen is surrounded", function () {
     $game->playTile('A', '1,-1');
     
     // act
-    $game->moveTile('-2,2', '1,-1');
+    $game->moveTile('-2,2', '-1,1');
 
 
     // assert
@@ -219,5 +219,5 @@ describe("Gameover should be false when the queen is not surrounded", function (
     $game->playTile('B', '-2,1');
 
     // assert
-    assertEqual($game->isGameOver(), true);
+    assertEqual($game->isGameOver(), false);
 });
