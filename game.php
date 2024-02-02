@@ -349,7 +349,9 @@ class Game {
         $this->game_id = $this->database->insert_id;
     }
 
-    public function isGameOver() {
+    public function isGameOver($returnWinner = false) {
+        $queenSurrounded = [false, false];
+
         for ($i = 0; $i < 2; $i++) {
             $queen = null;
             foreach ($this->board as $pos => $tile) {
@@ -375,9 +377,19 @@ class Game {
                 }
             }
             if ($surrounded) {
-                return true;
+                $queenSurrounded[$i] = true;
             }
         }
-        return false;
+        if ($returnWinner) {
+            if ($queenSurrounded[0] && $queenSurrounded[1]) {
+                return 2;
+            } elseif ($queenSurrounded[0]) {
+                return 1;
+            } elseif ($queenSurrounded[1]) {
+                return 0;
+            }
+            return false;
+        }
+        return $queenSurrounded[0] || $queenSurrounded[1];
     }
 }

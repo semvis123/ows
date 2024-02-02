@@ -132,6 +132,14 @@
                 $game->clearError();
             }
         ?></strong>
+        <strong><?php 
+            $winner = $game->isGameOver();
+            if ($winner !== false && $winner != 2) {
+                echo "Game over! ".$game->getPlayerName($winner)." wins!";
+            } elseif ($winner === 2) {
+                echo "Game over! It's a draw!";
+            }
+        ?></strong>
         <ol>
             <?php
                 echo $game->getMoveHistoryHtml();
