@@ -221,3 +221,28 @@ describe("Gameover should be false when the queen is not surrounded", function (
     // assert
     assertEqual($game->isGameOver(), false);
 });
+
+describe("The winner is the player without surrounded queen", function () {
+    // arrange
+    $db = getDatabase();
+    $game = new Game($db);
+    $game->restart();
+    $game->playTile('Q', '0,0');
+    $game->playTile('Q', '0,1');
+    $game->playTile('B', '-1,0');
+    $game->playTile('B', '-1,2');
+    $game->playTile('A', '0,-1');
+    $game->playTile('B', '-2,2');
+    $game->playTile('A', '1,-1');
+    $game->forcePass();
+    $game->moveTile('1,-1', '1,0');
+    $game->forcePass();
+    $game->playTile('A', '1,-1');
+    
+    // act
+    $game->moveTile('-2,2', '-1,1');
+    $winner = $game->isGameOver(true);
+
+    // assert
+    assertEqual($winner, 1);
+});
